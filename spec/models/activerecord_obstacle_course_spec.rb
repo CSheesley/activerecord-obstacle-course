@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'pry'
 
 describe 'ActiveRecord Obstacle Course' do
   before :each do
@@ -65,7 +66,7 @@ describe 'ActiveRecord Obstacle Course' do
     expect(orders_of_200.count).to eq(1)
   end
 
-  xit '2. finds order id of smallest order' do
+  it '2. finds order id of smallest order' do
     # ----------------------- Using Raw SQL ----------------------
     order_id = ActiveRecord::Base.connection.execute('SELECT id FROM orders ORDER BY amount ASC LIMIT 1').first['id']
     # ------------------------------------------------------------
@@ -73,13 +74,14 @@ describe 'ActiveRecord Obstacle Course' do
     # ------------------ Using ActiveRecord ----------------------
     # Solution goes here
     # Your solution should not contain the ID of the order anywhere
+    order_id = Order.order(:amount).first.id
     # ------------------------------------------------------------
 
     # Expectation
     expect(order_id).to eq(@order_1.id)
   end
 
-  xit '3. finds order id of largest order' do
+  it '3. finds order id of largest order' do
     # ----------------------- Using Raw SQL ----------------------
     order_id = ActiveRecord::Base.connection.execute('SELECT id FROM orders ORDER BY amount DESC LIMIT 1').first['id']
     # ------------------------------------------------------------
@@ -87,13 +89,14 @@ describe 'ActiveRecord Obstacle Course' do
     # ------------------ Using ActiveRecord ----------------------
     # Solution goes here
     # Your solution should not contain the ID of the order anywhere
+    order_id = Order.order(amount: :desc).first.id
     # ------------------------------------------------------------
 
     # Expectation
     expect(order_id).to eq(@order_15.id)
   end
 
-  xit '4. finds orders of multiple amounts' do
+  it '4. finds orders of multiple amounts' do
     # ----------------------- Using Ruby -------------------------
     orders_of_500_and_700 = Order.all.select do |order|
       order.amount == 500 || order.amount == 700
@@ -106,6 +109,8 @@ describe 'ActiveRecord Obstacle Course' do
 
     # ------------------ Using ActiveRecord ----------------------
     # Solution goes here
+    orders_of_500_and_700 = Order.where(amount: 500).or(Order.where(amount: 700))
+    orders_of_700_and_1000 = Order.where(amount: 700).or(Order.where(amount: 1000))
     # ------------------------------------------------------------
 
     # Expectation
