@@ -109,8 +109,10 @@ describe 'ActiveRecord Obstacle Course' do
 
     # ------------------ Using ActiveRecord ----------------------
     # Solution goes here
-    orders_of_500_and_700 = Order.where(amount: 500).or(Order.where(amount: 700))
-    orders_of_700_and_1000 = Order.where(amount: 700).or(Order.where(amount: 1000))
+    # orders_of_500_and_700 = Order.where(amount: 500).or(Order.where(amount: 700))
+    # orders_of_700_and_1000 = Order.where(amount: 700).or(Order.where(amount: 1000))
+    orders_of_500_and_700 = Order.where("amount = ? OR amount = ?", 500, 700)
+    orders_of_500_and_700 = Order.where("amount = ? OR amount = ?", 700, 1000)
     # ------------------------------------------------------------
 
     # Expectation
@@ -118,7 +120,7 @@ describe 'ActiveRecord Obstacle Course' do
     expect(orders_of_700_and_1000.count).to eq(2)
   end
 
-  xit '5. finds multiple items by id' do
+  it '5. finds multiple items by id' do
     ids_to_find = [@item_1.id, @item_2.id, @item_4.id]
     expected_objects = [@item_1, @item_4, @item_2]
 
@@ -128,13 +130,14 @@ describe 'ActiveRecord Obstacle Course' do
 
     # ------------------ Using ActiveRecord ----------------------
     # Solution goes here
+    items = Item.find(ids_to_find).sort
     # ------------------------------------------------------------
 
     # Expectation
     expect(items).to eq(expected_objects)
   end
 
-  xit '6. finds multiple orders by id' do
+  it '6. finds multiple orders by id' do
     ids_to_find = [@order_1.id, @order_3.id, @order_5.id, @order_7.id]
 
     # ----------------------- Using Ruby -------------------------
@@ -142,28 +145,29 @@ describe 'ActiveRecord Obstacle Course' do
     # ------------------------------------------------------------
 
     # ------------------ Using ActiveRecord ----------------------
-    # Solution goes here
+    orders_2 = Order.find(ids_to_find).sort
     # ------------------------------------------------------------
 
     # Expectation
     expect(orders).to eq([@order_3, @order_5, @order_1, @order_7])
   end
 
-  xit '7. finds orders with an amount between 700 and 1000' do
+  it '7. finds orders with an amount between 700 and 1000' do
     expected_result = [@order_11, @order_13, @order_8, @order_10, @order_15, @order_14, @order_12]
     # ----------------------- Using Ruby -------------------------
     orders_between_700_and_1000 = Order.all.select { |order| order.amount >= 700 && order.amount <= 1000 }
     # ------------------------------------------------------------
 
     # ------------------ Using ActiveRecord ----------------------
-    # Solution goes here
+    #is this correct? .where returns relations, not an array, but test passes.
+    orders_between_700_and_1000  = Order.where(:amount => 700 ..1000)
     # ------------------------------------------------------------
 
     # Expectation
     expect(orders_between_700_and_1000).to eq(expected_result)
   end
 
-  xit '8. finds orders with an amount less than 550' do
+  it '8. finds orders with an amount less than 550' do
     expected_result = [@order_3, @order_2, @order_1, @order_4]
 
     # ----------------------- Using Ruby -------------------------
@@ -171,7 +175,7 @@ describe 'ActiveRecord Obstacle Course' do
     # ------------------------------------------------------------
 
     # ------------------ Using ActiveRecord ----------------------
-    # Solution goes here
+    orders_less_than_550  = Order.where("amount < 550")
     # ------------------------------------------------------------
 
     # Expectation
@@ -283,7 +287,7 @@ describe 'ActiveRecord Obstacle Course' do
     expect(grouped_items).to eq(expected_result)
   end
 
-  xit '14. plucks all values from one column' do
+  it '14. plucks all values from one column' do
     expected_result = ['Apples', 'Bananas', 'Carrots', 'Dumplings', 'Eggplant', 'Figs', 'Grapes', 'Honey', 'Ice Cream', 'Jalapeno']
 
     # ----------------------- Using Ruby -------------------------
@@ -291,7 +295,7 @@ describe 'ActiveRecord Obstacle Course' do
     # ------------------------------------------------------------
 
     # ------------------ Using ActiveRecord ----------------------
-    # Solution goes here
+    names = Item.pluck(:name)
     # ------------------------------------------------------------
 
     # Expectation
