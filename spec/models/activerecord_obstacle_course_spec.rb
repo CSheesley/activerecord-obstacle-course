@@ -199,7 +199,7 @@ describe 'ActiveRecord Obstacle Course' do
 
 
 
-  xit '9. finds orders for a user' do
+  it '9. finds orders for a user' do
     expected_result = [@order_3, @order_15, @order_9, @order_12]
 
     # ----------------------- Using Ruby -------------------------
@@ -208,13 +208,14 @@ describe 'ActiveRecord Obstacle Course' do
 
     # ------------------ Using ActiveRecord ----------------------
     # Solution goes here
+    orders_of_user_3 = Order.where(user_id: @user_3.id)
     # ------------------------------------------------------------
 
     # Expectation
     expect(orders_of_user_3).to eq(expected_result)
   end
 
-  xit '10. sorts the orders from most expensive to least expensive' do
+  it '10. sorts the orders from most expensive to least expensive' do
     expected_result = [
       @order_15, @order_14, @order_13, @order_12, @order_11,
       @order_10, @order_8, @order_9, @order_7, @order_6,
@@ -227,13 +228,14 @@ describe 'ActiveRecord Obstacle Course' do
 
     # ------------------ Using ActiveRecord ----------------------
     # Solution goes here
+    orders = Order.order(amount: :desc)
     # ------------------------------------------------------------
 
     # Expectation
     expect(orders).to eq(expected_result)
   end
 
-  xit '11. sorts the orders from least expensive to most expensive' do
+  it '11. sorts the orders from least expensive to most expensive' do
     expected_result = [
       @order_1, @order_2, @order_3, @order_4, @order_5,
       @order_6, @order_7, @order_9, @order_8, @order_10,
@@ -246,13 +248,14 @@ describe 'ActiveRecord Obstacle Course' do
 
     # ------------------ Using ActiveRecord ----------------------
     # Solution goes here
+    orders = Order.order(:amount)
     # ------------------------------------------------------------
 
     # Expectation
     expect(orders).to eq(expected_result)
   end
 
-  xit '12. should return all items except items 2, 5 and 6' do
+  it '12. should return all items except items 2, 5 and 6' do
     items_not_included = [@item_2, @item_5, @item_6]
     expected_result = [
       @item_1, @item_4, @item_9, @item_10,
@@ -265,15 +268,15 @@ describe 'ActiveRecord Obstacle Course' do
 
     # ------------------ Using ActiveRecord ----------------------
     # Solution goes here
+    items = Item.where.not(id: items_not_included)
     # ------------------------------------------------------------
 
     # Expectation
     expect(items).to eq(expected_result)
   end
 
-  xit "13. groups an order's items by name" do
+  it "13. groups an order's items by name" do
     expected_result = [@item_4, @item_2, @item_5, @item_3]
-
     # ----------------------- Using Ruby -------------------------
     order = Order.find(@order_3.id)
     grouped_items = order.items.sort_by { |item| item.name }
@@ -281,6 +284,7 @@ describe 'ActiveRecord Obstacle Course' do
 
     # ------------------ Using ActiveRecord ----------------------
     # Solution goes here
+    grouped_items = Order.find(@order_3.id).items.order(:name)
     # ------------------------------------------------------------
 
     # Expectation
@@ -302,7 +306,7 @@ describe 'ActiveRecord Obstacle Course' do
     expect(names).to eq(expected_result)
   end
 
-  xit '15. gets all item names associated with all orders' do
+  it '15. gets all item names associated with all orders' do
     expected_result = [
       'Dumplings', 'Grapes', 'Bananas', 'Eggplant',
       'Eggplant', 'Bananas', 'Jalapeno', 'Carrots',
@@ -333,6 +337,7 @@ describe 'ActiveRecord Obstacle Course' do
 
     # ------------------ Using ActiveRecord ----------------------
     # Solution goes here
+    names = Order.joins(:items).pluck(:name)
     # ------------------------------------------------------------
 
     # Expectation
