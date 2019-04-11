@@ -608,12 +608,12 @@ describe 'ActiveRecord Obstacle Course' do
     expect(ordered_items_names).to_not include(unordered_items)
   end
 
-  xit '27. returns a table of information for all users orders' do
+  it '27. returns a table of information for all users orders' do
     custom_results = [@user_3, @user_1, @user_2]
 
     # using a single ActiveRecord call, fetch a joined object that mimics the
     # following table of information:
-    # --------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # user.name  |  total_order_count
     # Ian        |         4
     # Brian      |         5
@@ -621,6 +621,9 @@ describe 'ActiveRecord Obstacle Course' do
 
     # ------------------ ActiveRecord Solution ----------------------
     custom_results = []
+
+    custom_results = User.joins(items: :order_items).select("users.name, count(distinct order_items.order_id) as total_order_count").group(:name).order("total_order_count asc")
+    custom_results = User.joins(:orders).select("users.name, count(orders.id) as total_order_count").group(:name).order("total_order_count asc")
     # ---------------------------------------------------------------
 
     expect(custom_results[0].name).to eq(@user_3.name)
@@ -631,27 +634,29 @@ describe 'ActiveRecord Obstacle Course' do
     expect(custom_results[2].total_order_count).to eq(6)
   end
 
-  xit '28. returns a table of information for all users items' do
+  it '28. returns a table of information for all users items' do
     custom_results = [@user_2, @user_3, @user_1]
 
     # using a single ActiveRecord call, fetch a joined object that mimics the
     # following table of information:
     # --------------------------------------------------------------------------
-    # user.name  |  total_item_count
-    # Sal        |         20
-    # Megan      |         20
-    # Ian        |         20
+    # user.name    |  total_item_count
+    # Brian        |         20
+    # Ian          |         16
+    # Megan        |         24
 
     # ------------------ ActiveRecord Solution ----------------------
     custom_results = []
+    # binding.pry
+    custom_results = User.joins(:items).select("users.name, count(items.id) as total_item_count").group(:name).order(:name)
     # ---------------------------------------------------------------
 
-    expect(custom_results[0].name).to eq(@user_3.name)
+    expect(custom_results[0].name).to eq(@user_2.name)
     expect(custom_results[0].total_item_count).to eq(20)
-    expect(custom_results[1].name).to eq(@user_1.name)
-    expect(custom_results[1].total_item_count).to eq(20)
-    expect(custom_results[2].name).to eq(@user_2.name)
-    expect(custom_results[2].total_item_count).to eq(20)
+    expect(custom_results[1].name).to eq(@user_3.name)
+    expect(custom_results[1].total_item_count).to eq(16)
+    expect(custom_results[2].name).to eq(@user_1.name)
+    expect(custom_results[2].total_item_count).to eq(24)
   end
 
   xit '29. returns a table of information for all users orders and item counts' do
