@@ -708,8 +708,7 @@ describe 'ActiveRecord Obstacle Course' do
     data = User.joins(orders: :order_items)
                .group("orders.id")
                .select("users.name as user_name, orders.id as order_id, (orders.amount / count(order_items.order_id)) as avg_item_cost")
-               .order("user_name desc")
-               .order("avg_item_cost asc")
+               .order("user_name desc, avg_item_cost asc")
     # ---------------------------------------------------------------
 
     expect([data[0].user_name,data[0].order_id,data[0].avg_item_cost]).to eq([@user_1.name, @order_1.id, 50])
