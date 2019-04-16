@@ -111,8 +111,8 @@ describe 'ActiveRecord Obstacle Course' do
     # Solution goes here
     # orders_of_500_and_700 = Order.where(amount: 500).or(Order.where(amount: 700))
     # orders_of_700_and_1000 = Order.where(amount: 700).or(Order.where(amount: 1000))
-    orders_of_500_and_700 = Order.where("amount = ? OR amount = ?", 500, 700)
-    orders_of_500_and_700 = Order.where("amount = ? OR amount = ?", 700, 1000)
+    orders_of_500_and_700 = Order.where(amount: [500, 700])
+    orders_of_500_and_700 = Order.where(amount: [700, 1000])
     # ------------------------------------------------------------
 
     # Expectation
@@ -141,11 +141,11 @@ describe 'ActiveRecord Obstacle Course' do
     ids_to_find = [@order_1.id, @order_3.id, @order_5.id, @order_7.id]
 
     # ----------------------- Using Ruby -------------------------
-    orders = Order.all.select { |order| ids_to_find.include?(order.id) }
+    # orders = Order.all.select { |order| ids_to_find.include?(order.id) }
     # ------------------------------------------------------------
 
     # ------------------ Using ActiveRecord ----------------------
-    orders_2 = Order.find(ids_to_find).sort
+    orders = Order.order(:id).find(ids_to_find)
     # ------------------------------------------------------------
 
     # Expectation
@@ -160,7 +160,7 @@ describe 'ActiveRecord Obstacle Course' do
 
     # ------------------ Using ActiveRecord ----------------------
     #is this correct? .where returns relations, not an array, but test passes.
-    orders_between_700_and_1000  = Order.where(:amount => 700 ..1000)
+    orders_between_700_and_1000  = Order.where(amount: 700 ..1000)
     # ------------------------------------------------------------
 
     # Expectation
@@ -175,7 +175,7 @@ describe 'ActiveRecord Obstacle Course' do
     # ------------------------------------------------------------
 
     # ------------------ Using ActiveRecord ----------------------
-    orders_less_than_550  = Order.where("amount < 550")
+    orders_less_than_550  = Order.where("amount < ?", 550)
     # ------------------------------------------------------------
 
     # Expectation
